@@ -17,7 +17,7 @@ function changeHeaderText()
 
 function addCredits()
 {
-	document.getElementById("settings-list").innerHTML += "<li><a href='https://github.com/kipkat/'>Dwitter +</a></li>"
+	document.getElementById("settings-list").innerHTML += "<li><a href='https://github.com/kipkat/dwitter-plus'>Dwitter +</a></li>"
 }
 
 function newDefault()
@@ -83,7 +83,12 @@ function tool_Greekify()
 		.split("phi").join("Φ")
 		.split("theta").join("θ")
 		.split("epsilon").join("ε")
-		.split("lambda").join("λ")
+		.split("lambda").join("λ");
+}
+
+function tool_RevOb()
+{
+	prelus.value = "/*\u202E*/" + prelus.value;
 }
 
 // tools
@@ -91,3 +96,4 @@ createTool("delete all", `prelus.value=''`);
 createTool("one line", `tool_OneLine()`);
 createTool("more lines", `tool_MoreLines()`);
 createTool("greekify", `tool_Greekify()`);
+createTool("reverse obfuscate", `tool_RevOb()`);
