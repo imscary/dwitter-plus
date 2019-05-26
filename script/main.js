@@ -27,3 +27,4 @@ function newDefault()
 addFullscreenButton();
 changeHeaderText();
 addCredits();
+newDefault();
