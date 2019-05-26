@@ -66,12 +66,12 @@ prelus = document.getElementsByClassName('dweet-code')[0].children[0];
 // functions of tools
 function tool_OneLine()
 {
-	prelus.value = prelus.value.split('\n').join(';')
+	prelus.value = prelus.value.split('\n').join(';');
 }
 
 function tool_MoreLines()
 {
-	prelus.value = prelus.value.split(';').join('\n')
+	prelus.value = prelus.value.split(';').join('\n');
 }
 
 function tool_Greekify()
@@ -81,7 +81,7 @@ function tool_Greekify()
 		.split("pi").join("π")
 		.split("phi").join("Φ")
 		.split("theta").join("θ")
-		.split("epsilon").join("ε")
+		.split("epsilon").join("ε");
 }
 
 // tools
