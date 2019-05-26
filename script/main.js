@@ -1,5 +1,7 @@
 // important constants
-editor = document.getElementById("editor")
+const editor = document.getElementById("editor");
+
+const fInterval = 1;
 
 // functions
 function addFullscreenButton()
@@ -15,16 +17,75 @@ function changeHeaderText()
 
 function addCredits()
 {
-	document.getElementById("settings-list").innerHTML += "<li><a style='color: red;' href='kipkat'>Dwitter +</a></li>"
+	document.getElementById("settings-list").innerHTML += "<li><a href='https://github.com/kipkat/'>Dwitter +</a></li>"
 }
 
 function newDefault()
 {
-	editor.innerHTML = `c.width*=1;for(i=9;i--;)x.fillRect(400+i*100+S(t)*300,400,50,200)`
+	editor.innerHTML = `c.width*=1;for(i=9;i--;)x.fillRect(400+i*100+S(t)*300,400,50,200)`;
 }
 
-// execution
+function addPercent()
+{
+	ccount = document.getElementsByClassName("character-count")[0]
+	if (ccount.innerText.indexOf("%")==-1)
+	{
+		ccount.innerHTML+=` ${(Math.round(prelus.value.length/140*1000)/10).toString()}%`;
+	}
+}
+
+function addTools()
+{
+	editorSection = document.getElementsByClassName("dark-section")[0];
+	editorSection.innerHTML += '<div id="toolbox"></div>';
+	toolBox = document.getElementById("toolbox");
+}
+
+function createTool(caption, action, toolStyle = `font-size: 14px; background: #000; color: white; margin: 5px; padding: 2px; border: solid black 1px;`)
+{
+	toolBox.innerHTML += `<button class='tool button' onclick="${action}" style="${toolStyle}"> ${caption} </button>`;
+}
+
+// interval loop
+function loop()
+{
+	addPercent();
+}
+
+// small mods execution
 addFullscreenButton();
 changeHeaderText();
 addCredits();
 newDefault();
+setInterval(loop, fInterval);
+addTools();
+
+// constants for tools
+prelus = document.getElementsByClassName('dweet-code')[0].children[0];
+
+// functions of tools
+function tool_OneLine()
+{
+	prelus.value = prelus.value.split('\n').join(';')
+}
+
+function tool_MoreLines()
+{
+	prelus.value = prelus.value.split(';').join('\n')
+}
+
+function tool_Greekify()
+{
+	prelus.value = prelus.value
+		.split("delta").join("Δ")
+		.split("pi").join("π")
+		.split("phi").join("Φ")
+		.split("theta").join("θ")
+		.split("epsilon").join("ε")
+}
+
+// tools
+createTool("delete all", `prelus.value=''`);
+createTool("one line", `tool_OneLine()`);
+createTool("more lines", `tool_MoreLines()`);
+createTool("greekify", `tool_Greekify()`);
