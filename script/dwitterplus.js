@@ -91,9 +91,18 @@ function tool_RevOb()
 	prelus.value = "/*\u202E*/" + prelus.value;
 }
 
+function tool_Compress()
+{
+	// the following function is made by xem
+	// https://github.com/xem/obfuscatweet
+	compressAscii=function(b,c,a){c="";if(b.length%2)b+=" ";f=String.fromCharCode;for(a=0;b.length>a;a+=2)c+=f(55296+b[e="charCodeAt"](a))+f(56320+b[e](a+1));return c}
+	prelus.value = "eval(unescape(escape`" + compressAscii(prelus.value) + "`.replace(/uD./g,'')))"
+}
+
 // tools
 createTool("delete all", `prelus.value=''`);
 createTool("one line", `tool_OneLine()`);
 createTool("more lines", `tool_MoreLines()`);
 createTool("greekify", `tool_Greekify()`);
 createTool("reverse obfuscate", `tool_RevOb()`);
+createTool("compress", `tool_Compress()`);
