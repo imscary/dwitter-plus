@@ -106,3 +106,5 @@ createTool("more lines", `tool_MoreLines()`);
 createTool("greekify", `tool_Greekify()`);
 createTool("reverse obfuscate", `tool_RevOb()`);
 createTool("compress", `tool_Compress()`);
+createTool("save code", `localStorage['savedCode'] = prelus.value`);
+createTool("load code", `prelus.value = localStorage['savedCode']`);
