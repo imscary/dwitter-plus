@@ -30,6 +30,8 @@ function addPercent()
 	if (ccount.innerText.indexOf("%")==-1)
 	{
 		ccount.innerHTML+=` ${(Math.round(prelus.value.length/140*1000)/10).toString()}%`;
+		ccount.innerHTML+=` tglf:${(Math.round((prelus.value.length-140)/140*1000)/10).toString()}%`;
+		ccount.innerHTML+=` ctglf:${(Math.round((prelus.value.length-194)/194*1000)/10).toString()}%`;
 	}
 }
 
@@ -49,6 +51,7 @@ function createTool(caption, action, toolStyle = `font-size: 14px; background: #
 function loop()
 {
 	addPercent();
+	addSilentRemixButtons();
 }
 
 // small mods execution
@@ -64,6 +67,11 @@ document.getElementsByClassName("function-wrap")[0].innerHTML = "u=t=> {";
 prelus = document.getElementsByClassName('dweet-code')[0].children[0];
 
 // functions of tools
+function refreshDweet()
+{
+	document.getElementsByClassName("dweet-create-form-title-label")[0].click()
+}
+
 function tool_OneLine()
 {
 	prelus.value = prelus.value.split('\n').join(';');
@@ -98,12 +106,25 @@ function tool_Compress()
 	prelus.value = "eval(unescape(escape`" + compressAscii(prelus.value) + "`.replace(/uD./g,'')))";
 }
 
+function addSilentRemixButtons()
+{
+	da = document.getElementsByClassName("dweet-actions");
+	for (o in da)
+	{
+		m = da[o];
+		if (m.innerHTML.split("Silent").length<2 && o > 0) m.innerHTML+=
+`<button class='dweet-option' style='color: red; background: #000;' onclick='prelus.value = this.parentElement.parentElement.children[4].children[1].children[1].children[0].value; window.scrollTo({ top: 0, behavior: "smooth" });'>Silent Remix</button>`;
+	}
+}
+
 // tools
-createTool("delete all", `prelus.value=''`);
-createTool("one line", `tool_OneLine()`);
-createTool("more lines", `tool_MoreLines()`);
-createTool("greekify", `tool_Greekify()`);
-createTool("reverse obfuscate", `tool_RevOb()`);
-createTool("compress", `tool_Compress()`);
-createTool("save code", `localStorage['savedCode'] = prelus.value`);
-createTool("load code", `prelus.value = localStorage['savedCode']`);
+createTool("delete all", `prelus.value=''; refreshDweet()`);
+createTool("one line", `tool_OneLine(); refreshDweet()`);
+createTool("more lines", `tool_MoreLines(); refreshDweet()`);
+createTool("greekify", `tool_Greekify(); refreshDweet()`);
+createTool("reverse obfuscate", `tool_RevOb(); refreshDweet()`);
+createTool("compress", `tool_Compress(); refreshDweet()`);
+createTool("base64 obfuscate", `prelus.value = 'eval(atob\`'+btoa(prelus.value)+'\`)'; refreshDweet()`);
+createTool("save code", `localStorage['savedCode'] = prelus.value; refreshDweet()`);
+createTool("load code", `prelus.value = localStorage['savedCode']; refreshDweet()`);
+createTool("fill 140", `while(prelus.value.length<140) prelus.value += '/'; refreshDweet()`);
