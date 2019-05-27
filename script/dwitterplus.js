@@ -1,6 +1,5 @@
 // important constants
 const editor = document.getElementById("editor");
-
 const fInterval = 1;
 
 // functions
@@ -67,12 +66,12 @@ prelus = document.getElementsByClassName('dweet-code')[0].children[0];
 // functions of tools
 function tool_OneLine()
 {
-	prelus.value = prelus.value.split('\n').join(';')
+	prelus.value = prelus.value.split('\n').join(';');
 }
 
 function tool_MoreLines()
 {
-	prelus.value = prelus.value.split(';').join('\n')
+	prelus.value = prelus.value.split(';').join('\n');
 }
 
 function tool_Greekify()
@@ -96,7 +95,7 @@ function tool_Compress()
 	// the following function is made by xem
 	// https://github.com/xem/obfuscatweet
 	compressAscii=function(b,c,a){c="";if(b.length%2)b+=" ";f=String.fromCharCode;for(a=0;b.length>a;a+=2)c+=f(55296+b[e="charCodeAt"](a))+f(56320+b[e](a+1));return c}
-	prelus.value = "eval(unescape(escape`" + compressAscii(prelus.value) + "`.replace(/uD./g,'')))"
+	prelus.value = "eval(unescape(escape`" + compressAscii(prelus.value) + "`.replace(/uD./g,'')))";
 }
 
 // tools
