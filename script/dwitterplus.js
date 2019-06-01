@@ -112,8 +112,15 @@ function addSilentRemixButtons()
 	for (o in da)
 	{
 		m = da[o];
-		if (m.innerHTML.split("Silent").length<2 && o > 0) m.innerHTML+=
+		try
+		{
+			if (m.innerHTML.split("Silent").length<2 && o > 0) m.innerHTML+=
 `<button class='dweet-option' style='color: red; background: #000;' onclick='prelus.value = this.parentElement.parentElement.children[4].children[1].children[1].children[0].value; window.scrollTo({ top: 0, behavior: "smooth" });'>Silent Remix</button>`;
+		}
+		catch (e)
+		{
+			// actually nothing	
+		}
 	}
 }
 
@@ -127,4 +134,5 @@ createTool("compress", `tool_Compress(); refreshDweet()`);
 createTool("base64 obfuscate", `prelus.value = 'eval(atob\`'+btoa(prelus.value)+'\`)'; refreshDweet()`);
 createTool("save code", `localStorage['savedCode'] = prelus.value; refreshDweet()`);
 createTool("load code", `prelus.value = localStorage['savedCode']; refreshDweet()`);
-createTool("fill 140", `while(prelus.value.length<140) prelus.value += '/'; refreshDweet()`);
+createTool("fill until 140", `while(prelus.value.length<140) prelus.value += '/'; refreshDweet()`);
+createTool("hide until 140", `while(prelus.value.length<140) prelus.value = '\\r\\n' + prelus.value; refreshDweet()`);
