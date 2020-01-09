@@ -205,6 +205,8 @@ function addNewsItem(item) {
 }
 
 function loadNews() {
+	document.title="News";
+	
 	madeByYou = [];
 	newsBox.innerHTML="<h3>News - generated using Dwitter +</h3>";
 	
