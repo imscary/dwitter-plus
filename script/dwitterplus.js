@@ -1,6 +1,8 @@
 // important constants
 const editor = document.getElementById("editor");
 const fInterval = 1;
+const isNews = window.location.pathname=='/news';
+const user = document.getElementsByClassName("name")[0].innerText;
 
 // functions
 function addFullscreenButton()
@@ -14,9 +16,13 @@ function changeHeaderText()
 	document.getElementById("dwitter-header-text").innerHTML += " +";
 }
 
+function addNewsButton() {
+	document.getElementsByClassName("top-sort-list")[0].innerHTML+="<li><a href=\"/news\">news</a></li>"
+}
+
 function addCredits()
 {
-	document.getElementById("settings-list").innerHTML += "<li><a href='https://github.com/kipkat/dwitter-plus'>Dwitter +</a></li>"
+	document.getElementById("settings-list").innerHTML += "<li><a href=\"https://github.com/kipkat/dwitter-plus\">Dwitter +</a></li>"
 }
 
 function newDefault()
@@ -44,7 +50,7 @@ function addTools()
 
 function createTool(caption, action, toolStyle = `font-size: 14px; background: #000; color: white; margin: 5px; padding: 2px; border: solid black 1px;`)
 {
-	toolBox.innerHTML += `<button class='tool button' onclick="${action}" style="${toolStyle}"> ${caption} </button>`;
+	if (!isNews) toolBox.innerHTML += `<button class="tool button" onclick="${action}" style="${toolStyle}"> ${caption} </button>`;
 }
 
 // interval loop
@@ -56,16 +62,21 @@ function loop()
 }
 
 // small mods execution
-addFullscreenButton();
 changeHeaderText();
 addCredits();
-newDefault();
-setInterval(loop, fInterval);
-addTools();
-document.getElementsByClassName("function-wrap")[0].innerHTML = "u=t=> {";
+if (!isNews) {
+	addFullscreenButton();
+	newDefault();
+	addTools();
+	addNewsButton();
+	setInterval(loop, fInterval);
+	document.getElementsByClassName("function-wrap")[0].innerHTML = "u=t=> {";
+}
 
-// constants for tools
-prelus = document.getElementsByClassName('dweet-code')[0].children[0];
+if (!isNews) {
+	// constants for tools
+	prelus = document.getElementsByClassName('dweet-code')[0].children[0];
+}
 
 // functions of tools
 function refreshDweet()
@@ -154,3 +165,83 @@ createTool("save code", `localStorage['savedCode'] = prelus.value; refreshDweet(
 createTool("load code", `prelus.value = localStorage['savedCode']; refreshDweet()`);
 createTool("fill until 140", `while(prelus.value.length<140) prelus.value += '/'; refreshDweet()`);
 createTool("hide until 140", `while(prelus.value.length<140) prelus.value = '\\r\\n' + prelus.value; refreshDweet()`);
+
+// notifications & latest news
+
+let latestn = {};
+const limit = 100;
+let api_ = "https://www.dwitter.net/api/"
+let newsBox = document.getElementsByClassName("content-div")[0];
+
+function showLoading() {
+	newsBox.innerHTML="<h3>Dwitter +</h3><h1>Loading news...</h1>";
+}
+
+if (isNews) {
+	console.log("News page");
+	showLoading();
+	fetch(`${api_}dweets/?limit=${limit}`).then(x=>x.text().then(j=>{
+	    latestn["dweets"]=JSON.parse(j);
+	    fetch(`${api_}comments/?limit=1`).then(x=>x.text().then(j=>{
+	        latestn["ccount"]=JSON.parse(j).count
+	        fetch(`${api_}comments/?offset=${latestn.ccount-limit*3}&limit=${limit*3}`).then(x=>x.text().then(j=>{
+	            latestn["comments"]=JSON.parse(j)
+	            loadNews();
+	        }))
+	    }))
+	}))
+}
+
+function hyperlinkify(dweetId) {
+	return `<a href="d/${dweetId}">d/${dweetId}</a>`
+}
+
+function userify(username) {
+	return `<a href="u/${username}">u/${username}</a>`
+}
+
+function addNewsItem(item) {
+	newsBox.innerHTML += `<p>${item}</p>`
+}
+
+function loadNews() {
+	madeByYou = [];
+	newsBox.innerHTML="<h3>News - generated using Dwitter +</h3>";
+	
+	// caculate & show most liked recent dweet
+	let mostLiked = {awesome_count: 1};
+	let yourMostLiked = {awesome_count: 1};
+	for (dweet of latestn.dweets.results) {
+	    if (dweet.awesome_count > mostLiked.awesome_count) mostLiked=dweet; // select max
+	    if (dweet.author.username == user) {
+	    	madeByYou.push(dweet.id); // save the ones made by u
+	    	if (dweet.awesome_count > yourMostLiked.awesome_count) yourMostLiked = dweet;
+	    }
+	}
+	
+	addNewsItem(`Most liked recent dweet: ${hyperlinkify(mostLiked.id)} (has ${mostLiked.awesome_count} likes) made by ${userify(mostLiked.author.username)}`);
+	addNewsItem(`Your most liked recent dweet: ${hyperlinkify(yourMostLiked.id)} (has ${yourMostLiked.awesome_count} likes)`);
+	
+	addNewsItem(`<h4>Your recent comments</h4>`);
+	for (commentID = latestn.comments.results.length-1; commentID >= 0; commentID--) {
+		let comment = latestn.comments.results[commentID]
+		if (madeByYou.indexOf(comment.reply_to)!=-1) { 
+			// if it's a reply to your creation
+			if (comment.author != user) {
+				// and it's not yours
+				addNewsItem(`${userify(comment.author)} left a comment on ${hyperlinkify(comment.reply_to)}:
+				<br><li>${comment.urlized_text}</li>`)
+			}
+		}
+	}
+	
+	addNewsItem(`<h4>Recent remixes</h4>`);
+	for (dweet of latestn.dweets.results) {
+		if (madeByYou.indexOf(dweet.remix_of)!=-1) {
+			if (dweet.author.username != user) {
+				addNewsItem(`${userify(dweet.author.username)} remixed ${hyperlinkify(dweet.remix_of)}
+					-> ${hyperlinkify(dweet.id)}`)
+			}
+		}
+	}
+}
