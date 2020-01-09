@@ -21,7 +21,7 @@ function addCredits()
 
 function newDefault()
 {
-	editor.innerHTML = `c.width*=1;for(i=9;i--;)x.fillRect(400+i*100+S(t)*300,400,50,200)`;
+	editor.innerHTML = `for(c.width|=i=9;z=400,i--;)x.fillRect(z+i*99+S(t)*z,z,50,200)`;
 }
 
 function addPercent()
@@ -52,6 +52,7 @@ function loop()
 {
 	addPercent();
 	addSilentRemixButtons();
+	addUncompressionButtons();
 }
 
 // small mods execution
@@ -115,7 +116,24 @@ function addSilentRemixButtons()
 		try
 		{
 			if (m.innerHTML.split("Silent").length<2 && o > 0) m.innerHTML+=
-`<button class='dweet-option' style='color: red; background: #000;' onclick='prelus.value = this.parentElement.parentElement.children[4].children[1].children[1].children[0].value; window.scrollTo({ top: 0, behavior: "smooth" });'>Silent Remix</button>`;
+`<button class='dweet-option' style='color: red; background: #000;' onclick='prelus.value = this.parentElement.parentElement.children[4].children[1].children[1].children[0].value; window.scrollTo({ top: 0, behavior: "smooth" });document.getElementsByClassName("dweet-create-form-title-label")[0].click()'>Silent Remix</button>`;
+		}
+		catch (e)
+		{
+			// actually nothing	
+		}
+	}
+}
+
+function addUncompressionButtons() {
+	da = document.getElementsByClassName("dweet-actions");
+	for (o in da)
+	{
+		m = da[o];
+		try
+		{
+			if (m.innerHTML.split("Uncompress").length<2 && o > 0) m.innerHTML+=
+`<button class='dweet-option' style='color: red; background: #000;' onclick='this.parentElement.parentElement.children[4].children[1].children[1].children[0].value=eval(this.parentElement.parentElement.children[4].children[1].children[1].children[0].value.split("eval").join(""))'>Uncompress</button>`;
 		}
 		catch (e)
 		{
